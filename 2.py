@@ -9,14 +9,14 @@ client = MongoClient(
 
 db = client.book
 
-# Створення
+# # Створення
 result_many = db.cats.insert_many(
     [{"name": "Lama","age": 2,"features": ["ходить в лоток", "не дає себе гладити", "сірий"],},
     {"name": "Liza","age": 4,"features": ["ходить в лоток", "дає себе гладити", "білий"],},
     {"name": "barsik","age": 3,"features": ["ходить в капці", "дає себе гладити", "рудий"],}])
 print(result_many.inserted_ids)
 
-# Пошук
+# # Пошук
 find_all = db.cats.find({})
 for el in find_all:
     print(el)
@@ -29,7 +29,7 @@ else:
     print("Такого імя не має!")
 
     
-# Оновлення
+# # Оновлення
 cat_name = input("Введіть імя кота для оновлення віку: ")
 find_cat = db.cats.find_one({"name": cat_name})
 
@@ -47,13 +47,15 @@ find_cat = db.cats.find_one({"name": cat_name})
 
 if find_cat is not None:
     cat_features = [input("Введіть характеристику: ")]
-    db.cats.update_one({"name": cat_name}, {"$addToSet": {"features": cat_features}})
+    db.cats.update_one({"name": cat_name}, {"$addToSet": {"features": {"$each": cat_features}}})
+    find_cat = db.cats.find_one({"name": cat_name})
+    print(find_cat)
     print("Характеристика додана!")
 else:
     print("Такого імя не має!")
 
 
-# Видалення
+# # Видалення
 cat_name = input("Введіть імя кота для видалення: ")
 find_cat = db.cats.find_one({"name": cat_name})
 
